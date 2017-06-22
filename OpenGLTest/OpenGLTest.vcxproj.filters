@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{3795d2e6-70e1-43c8-af07-1f867bf0bf81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{d520ed39-4b27-44ba-b978-189d02169fb5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLTest.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Draw2D.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Math.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OpenGLTest.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="OpenGLTest.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Draw2D.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLTest.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="RefCount.hpp">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="GLImp.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\AlphaFShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\AlphaVShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\LightFShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\LightVShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleFShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleModelFShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleModelVShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleVShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\FrameFShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\FrameVShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SkyBoxFShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SkyBoxVShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
