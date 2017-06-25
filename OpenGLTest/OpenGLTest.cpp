@@ -35,6 +35,7 @@ SimpleModelRender *GSimpleModelRender;
 SimpleSceneRender *GSimpleSceneRender;
 SimpleFrameRender *GSimpleFrameRender;
 SkyBoxRender *GSkyBoxRender;
+ModifyShapeRender *GModifyShapeRender;
 
 #ifdef _WINMAIN
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
@@ -71,15 +72,15 @@ int main(int argc, char* argv[])
     Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
     GCamera->LookAt(eye, eye+dir, up);
 
-    // init render
+    // init renders
     GSimpleRender = new SimpleRender();
     GSimpleRender->Load();
 
     GLightRender = new LightRender();
     GLightRender->Load();
 
-    //GSimpleModelRender = new SimpleModelRender();
-    //GSimpleModelRender->Load();
+    GSimpleModelRender = new SimpleModelRender();
+    GSimpleModelRender->Load();
 
     GSimpleSceneRender = new SimpleSceneRender();
     GSimpleSceneRender->Load();
@@ -90,14 +91,18 @@ int main(int argc, char* argv[])
     GSkyBoxRender = new SkyBoxRender();
     GSkyBoxRender->Load();
 
+    GModifyShapeRender = new ModifyShapeRender();
+    GModifyShapeRender->Load();
+
     // auto memory release
     std::unique_ptr<Camera> pCamera(GCamera);
     std::unique_ptr<SimpleRender> pSimpleRender(GSimpleRender);
     std::unique_ptr<LightRender> pLightRender(GLightRender);
-    //std::unique_ptr<SimpleModelRender> pSimpleModelRender(GSimpleModelRender);
+    std::unique_ptr<SimpleModelRender> pSimpleModelRender(GSimpleModelRender);
     std::unique_ptr<SimpleSceneRender> pSimpleSceneRender(GSimpleSceneRender);
     std::unique_ptr<SimpleFrameRender> pSimpleFrameRender(GSimpleFrameRender);
     std::unique_ptr<SkyBoxRender> pSkyBoxRender(GSkyBoxRender);
+    std::unique_ptr<ModifyShapeRender> pModifyShapeRender(GModifyShapeRender);
 
     // setup keyboard, mouse callback
     glfwSetKeyCallback(window, key_callback);
@@ -166,12 +171,13 @@ void Simulate(GLFWwindow* window)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-    GSimpleRender->Simulate(0.0f);
+    //GSimpleRender->Simulate(0.0f);
     //GLightRender->Simulate(0.0f);
-    //GSimpleModelRender->Simulate(0.0f);
+    GSimpleModelRender->Simulate(0.0f);
     //GSimpleSceneRender->Simulate(0.0f);
     //GSimpleFrameRender->Simulate(0.0f);
-    GSkyBoxRender->Simulate(0.0f);
+    //GSkyBoxRender->Simulate(0.0f);
+    //GModifyShapeRender->Simulate(0.0f);
 
     glFlush();
     Sleep(10);

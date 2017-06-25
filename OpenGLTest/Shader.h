@@ -275,27 +275,28 @@ private:
         GLint success;
         GLchar infoLog[0x400];
         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        Assert(success);
         if (!success)
         {
             glGetShaderInfoLog(shader, sizeof(infoLog), NULL, infoLog);
             DEBUG_LOG("Error: Shader compile failed.\n");
             DEBUG_LOG(infoLog);
+            Assert(success);
             return GLFAIL;
         }
         return GLOK;
     }
+
     static GLRESULT CheckShaderLinking(GLuint program)
     {
         GLint success;
         GLchar infoLog[0x400];        
-        glGetProgramiv(program, GL_LINK_STATUS, &success);
-        Assert(success);
+        glGetProgramiv(program, GL_LINK_STATUS, &success);        
         if (!success)
         {
             glGetProgramInfoLog(program, sizeof(infoLog), NULL, infoLog);
             DEBUG_LOG("Error: Program linking failed.\n");
             DEBUG_LOG(infoLog);
+            Assert(success);
             return GLFAIL;
         }
         return GLOK;
@@ -315,6 +316,14 @@ public:
     {
         Base::Load();
         LoadShader(vShader, VertexShader);
+        LoadShader(fShader, FragmentShader);
+    };
+    SimpleShader(const GLchar *vShader, const GLchar *fShader, const GLchar* gShader)
+    {
+        Base::Load();
+        // GeometryShader should load before FragmentShader, after VertexShader.
+        LoadShader(vShader, VertexShader);
+        LoadShader(gShader, GeometryShader);
         LoadShader(fShader, FragmentShader);
     };
     virtual ~SimpleShader() {};

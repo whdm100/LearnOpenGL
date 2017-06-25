@@ -307,7 +307,8 @@ void LightRender::Simulate(float delta)
 }
 
 SimpleModelRender::SimpleModelRender()
-    : _shader(new SimpleShader("Shader\\SimpleModelVShader.vert", "Shader\\SimpleModelFShader.frag"))
+    : _modelShader(new SimpleShader("Shader\\SimpleModelShader.vert", "Shader\\SimpleModelShader.frag"))
+    , _hairShader(new SimpleShader("Shader\\SimpleModelHair.vert", "Shader\\SimpleModelHair.frag", "Shader\\SimpleModelHair.geom"))
     , _model(new Model("Resource\\Model\\nanosuit\\nanosuit.obj"))
 {
 
@@ -329,7 +330,8 @@ void SimpleModelRender::Unload()
 
 void SimpleModelRender::Simulate(float delta)
 {
-    _shader->Bind();
+    // draw model first
+    _modelShader->Bind();
 
     // set transform matrix
     Matrix4 view = GCamera->View();
@@ -341,23 +343,32 @@ void SimpleModelRender::Simulate(float delta)
     model = scale(model, Vector3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
 
     Matrix4 transform = proj * view * model;
-    _shader->SetParamMat4f("model", value_ptr(model));
-    _shader->SetParamMat4f("transform", value_ptr(transform));
+    _modelShader->SetParamMat4f("model", value_ptr(model));
+    _modelShader->SetParamMat4f("transform", value_ptr(transform));
 
     Vector3 lightPos(1.0f, 1.2f, 2.0f);
     Vector3 viewPos = GCamera->Position();
-    _shader->SetParamFloat3("viewPos", viewPos.x, viewPos.y, viewPos.z);
+    _modelShader->SetParamFloat3("viewPos", viewPos.x, viewPos.y, viewPos.z);
 
     // direction light
-    _shader->SetParamFloat3("dirLight.direction", 1.0f, 1.0f, 1.0f);
+    _modelShader->SetParamFloat3("dirLight.direction", 1.0f, 1.0f, 1.0f);
 
-    _shader->SetParamFloat4("dirLight.diffuse", 0.4f, 0.4f, 0.4f, 0.4f);
-    _shader->SetParamFloat4("dirLight.ambient", 0.1f, 0.1f, 0.1f, 0.1f);
-    _shader->SetParamFloat4("dirLight.specular", 0.2f, 0.2f, 0.2f, 0.2f);
+    _modelShader->SetParamFloat4("dirLight.diffuse", 0.4f, 0.4f, 0.4f, 0.4f);
+    _modelShader->SetParamFloat4("dirLight.ambient", 0.1f, 0.1f, 0.1f, 0.1f);
+    _modelShader->SetParamFloat4("dirLight.specular", 0.2f, 0.2f, 0.2f, 0.2f);
 
-    _model->Draw(_shader.get());
+    _model->Draw(_modelShader.get());
 
-    _shader->UnBind();
+    _modelShader->UnBind();
+
+    // draw model vertex hair
+    _hairShader->Bind();
+
+    _hairShader->SetParamMat4f("transform", value_ptr(transform));
+
+    _model->Draw(_hairShader.get());
+
+    _hairShader->UnBind();
 }
 
 SimpleSceneRender::SimpleSceneRender()
@@ -784,7 +795,6 @@ void SkyBoxRender::Unload()
     glDeleteBuffers(1, &_uboMatrix);
 }
 
-
 void SkyBoxRender::Simulate(float delta)
 {
     _sceneShader->Bind();
@@ -820,4 +830,60 @@ void SkyBoxRender::Simulate(float delta)
     glDepthFunc(GL_LESS);
 
     _sceneShader->UnBind();
+}
+
+ModifyShapeRender::ModifyShapeRender()
+    : _shapeShader(new SimpleShader(
+        "Shader\\ShapeModify.vert", 
+        "Shader\\ShapeModify.frag",
+        "Shader\\ShapeModify.geom"))
+{
+}
+
+ModifyShapeRender::~ModifyShapeRender()
+{
+    Unload();
+}
+
+const GLfloat pointVertices[] = {
+    // position         // color
+    -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+    0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+    -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f
+};
+
+GLRESULT ModifyShapeRender::Load()
+{
+    glGenVertexArrays(1, &_vao);
+    glGenBuffers(1, &_vbo);
+
+    glBindVertexArray(_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(pointVertices), &pointVertices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), nullptr);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const void*)(3 * sizeof(GLfloat)));
+    glBindVertexArray(0);
+
+    return GLOK;
+}
+
+void ModifyShapeRender::Unload()
+{
+    glDeleteBuffers(1, &_vao);
+    glDeleteBuffers(1, &_vbo);
+}
+
+void ModifyShapeRender::Simulate(float delta)
+{
+    _shapeShader->Bind();
+
+    glBindVertexArray(_vao);
+    glDrawArrays(GL_POINTS, 0, 4);
+    glBindVertexArray(0);
+
+    _shapeShader->UnBind();
 }

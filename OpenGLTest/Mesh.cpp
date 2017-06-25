@@ -6,13 +6,13 @@
 #include <iostream>
 
 Mesh::Mesh()
-: _hasElemArray(false)
-, _attrIDs(AttrIDS::AttrNone)
-, _vao(0)
-, _vbo(0)
-, _ebo(0)
-, _vertices(0)
-, _indices(0)
+    : _hasElemArray(false)
+    , _attrIDs(AttrIDS::AttrNone)
+    , _vao(0)
+    , _vbo(0)
+    , _ebo(0)
+    , _vertices(0)
+    , _indices(0)
 {}
 
 Mesh::~Mesh()

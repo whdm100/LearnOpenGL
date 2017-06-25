@@ -127,9 +127,15 @@
     <None Include="Shader\FrameVShader.vert" />
     <None Include="Shader\LightFShader.frag" />
     <None Include="Shader\LightVShader.vert" />
+    <None Include="Shader\ShapeModify.frag" />
+    <None Include="Shader\ShapeModify.geom" />
+    <None Include="Shader\ShapeModify.vert" />
     <None Include="Shader\SimpleFShader.frag" />
-    <None Include="Shader\SimpleModelFShader.frag" />
-    <None Include="Shader\SimpleModelVShader.vert" />
+    <None Include="Shader\SimpleModelHair.frag" />
+    <None Include="Shader\SimpleModelHair.geom" />
+    <None Include="Shader\SimpleModelHair.vert" />
+    <None Include="Shader\SimpleModelShader.frag" />
+    <None Include="Shader\SimpleModelShader.vert" />
     <None Include="Shader\SimpleVShader.vert" />
     <None Include="Shader\SkyBoxFShader.frag" />
     <None Include="Shader\SkyBoxVShader.vert" />

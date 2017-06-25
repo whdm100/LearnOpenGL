@@ -30,6 +30,9 @@ public:
     virtual GLRESULT Load() = 0;
     virtual void Unload() = 0;
 
+    virtual void Begin() {}
+    virtual void End() {}
+
     virtual void Simulate(float delta) = 0;
 };
 
@@ -80,7 +83,8 @@ public:
     virtual void Simulate(float delta);
 
 private:
-    std::unique_ptr<Shader> _shader;
+    std::unique_ptr<Shader> _modelShader;
+    std::unique_ptr<Shader> _hairShader;
     std::unique_ptr<Model> _model;
 };
 
@@ -144,6 +148,24 @@ private:
     Mesh _skybox;
     GLuint _uboMatrix;
     GLuint _uboColor;
+};
+
+class ModifyShapeRender : public Render
+{
+    typedef Render Base;
+public:
+    ModifyShapeRender();
+    virtual ~ModifyShapeRender();
+
+    virtual GLRESULT Load();
+    virtual void Unload();
+
+    virtual void Simulate(float delta);
+
+private:
+    std::unique_ptr<Shader> _shapeShader;
+    GLuint _vbo;
+    GLuint _vao;
 };
 
 #endif // __RENDER_H

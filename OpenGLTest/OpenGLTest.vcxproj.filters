@@ -121,12 +121,6 @@
     <None Include="Shader\SimpleFShader.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shader\SimpleModelFShader.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shader\SimpleModelVShader.vert">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shader\SimpleVShader.vert">
       <Filter>Shaders</Filter>
     </None>
@@ -140,6 +134,30 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\SkyBoxVShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\ShapeModify.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\ShapeModify.geom">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\ShapeModify.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleModelShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleModelShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleModelHair.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleModelHair.geom">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleModelHair.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
