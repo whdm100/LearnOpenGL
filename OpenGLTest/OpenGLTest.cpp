@@ -36,6 +36,7 @@ SimpleSceneRender *GSimpleSceneRender;
 SimpleFrameRender *GSimpleFrameRender;
 SkyBoxRender *GSkyBoxRender;
 ModifyShapeRender *GModifyShapeRender;
+InstanceRender *GInstanceRender;
 
 #ifdef _WINMAIN
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
@@ -79,8 +80,8 @@ int main(int argc, char* argv[])
     GLightRender = new LightRender();
     GLightRender->Load();
 
-    GSimpleModelRender = new SimpleModelRender();
-    GSimpleModelRender->Load();
+    //GSimpleModelRender = new SimpleModelRender();
+    //GSimpleModelRender->Load();
 
     GSimpleSceneRender = new SimpleSceneRender();
     GSimpleSceneRender->Load();
@@ -94,15 +95,19 @@ int main(int argc, char* argv[])
     GModifyShapeRender = new ModifyShapeRender();
     GModifyShapeRender->Load();
 
+    GInstanceRender = new InstanceRender();
+    GInstanceRender->Load();
+
     // auto memory release
     std::unique_ptr<Camera> pCamera(GCamera);
     std::unique_ptr<SimpleRender> pSimpleRender(GSimpleRender);
     std::unique_ptr<LightRender> pLightRender(GLightRender);
-    std::unique_ptr<SimpleModelRender> pSimpleModelRender(GSimpleModelRender);
+    //std::unique_ptr<SimpleModelRender> pSimpleModelRender(GSimpleModelRender);
     std::unique_ptr<SimpleSceneRender> pSimpleSceneRender(GSimpleSceneRender);
     std::unique_ptr<SimpleFrameRender> pSimpleFrameRender(GSimpleFrameRender);
     std::unique_ptr<SkyBoxRender> pSkyBoxRender(GSkyBoxRender);
     std::unique_ptr<ModifyShapeRender> pModifyShapeRender(GModifyShapeRender);
+    std::unique_ptr<InstanceRender> pInstanceRender(GInstanceRender);
 
     // setup keyboard, mouse callback
     glfwSetKeyCallback(window, key_callback);
@@ -173,11 +178,12 @@ void Simulate(GLFWwindow* window)
 
     //GSimpleRender->Simulate(0.0f);
     //GLightRender->Simulate(0.0f);
-    GSimpleModelRender->Simulate(0.0f);
+    //GSimpleModelRender->Simulate(0.0f);
     //GSimpleSceneRender->Simulate(0.0f);
     //GSimpleFrameRender->Simulate(0.0f);
     //GSkyBoxRender->Simulate(0.0f);
     //GModifyShapeRender->Simulate(0.0f);
+    GInstanceRender->Simulate(0.0f);
 
     glFlush();
     Sleep(10);

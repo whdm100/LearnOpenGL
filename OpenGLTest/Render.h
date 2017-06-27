@@ -168,4 +168,22 @@ private:
     GLuint _vao;
 };
 
+class InstanceRender : public Render
+{
+    typedef Render Base;
+public:
+    InstanceRender();
+    virtual ~InstanceRender();
+
+    virtual GLRESULT Load();
+    virtual void Unload();
+
+    virtual void Simulate(float delta);
+
+private:
+    std::unique_ptr<Shader> _shader;
+    GLuint _vao;
+    GLuint _vbo;
+};
+
 #endif // __RENDER_H

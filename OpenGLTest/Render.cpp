@@ -887,3 +887,75 @@ void ModifyShapeRender::Simulate(float delta)
 
     _shapeShader->UnBind();
 }
+
+InstanceRender::InstanceRender()
+    : _shader(new SimpleShader("Shader\\InstanceShader.vert", "Shader\\InstanceShader.frag"))
+{
+}
+
+InstanceRender::~InstanceRender()
+{
+    Unload();
+}
+
+const GLfloat instanceVertices[] = {
+    // position     // color
+    -0.05f, 0.05f, 1.0f, 0.0f, 0.0f,
+    0.05f, -0.05f, 0.0f, 1.0f, 0.0f,
+    -0.05f, -0.05f, 0.0f, 0.0f, 1.0f,
+
+    -0.05f, 0.05f, 1.0f, 0.0f, 0.0f,
+    0.05f, -0.05f, 0.0f, 1.0f, 0.0f,
+    0.05f, 0.05f, 0.0f, 1.0f, 1.0f
+};
+
+GLRESULT InstanceRender::Load()
+{
+    glGenVertexArrays(1, &_vao);
+    glGenBuffers(1, &_vbo);
+
+    glBindVertexArray(_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(instanceVertices), &instanceVertices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), nullptr);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (const void*)(2 * sizeof(GLfloat)));
+    glBindVertexArray(0);
+
+    Vector2 *offsets = new Vector2[100];
+    int index = 0;
+    for (int i = -10; i < 10; i+=2)
+    {
+        for (int j = -10; j < 10; j+=2)
+        {
+            offsets[index++] = Vector2((float)i / 10.0f, (float)j / 10.0f);
+        }
+    }
+
+    _shader->Bind();
+    _shader->SetParamFloatArray<2>("offset", 100, value_ptr(offsets[0]));
+    _shader->UnBind();
+
+    delete[] offsets;
+
+    return GLOK;
+}
+
+void InstanceRender::Unload()
+{
+    glDeleteBuffers(1, &_vao);
+    glDeleteBuffers(1, &_vbo);
+}
+
+void InstanceRender::Simulate(float delta)
+{
+    _shader->Bind();
+
+    glBindVertexArray(_vao);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
+    glBindVertexArray(0);
+
+    _shader->UnBind();
+}

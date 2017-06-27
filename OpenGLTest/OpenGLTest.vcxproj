@@ -125,6 +125,8 @@
     <None Include="Shader\AlphaVShader.vert" />
     <None Include="Shader\FrameFShader.frag" />
     <None Include="Shader\FrameVShader.vert" />
+    <None Include="Shader\InstanceShader.frag" />
+    <None Include="Shader\InstanceShader.vert" />
     <None Include="Shader\LightFShader.frag" />
     <None Include="Shader\LightVShader.vert" />
     <None Include="Shader\ShapeModify.frag" />

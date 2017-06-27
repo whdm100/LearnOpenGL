@@ -244,6 +244,81 @@ public:
         return GLFAIL;
     }
 
+    template <int stride>
+    GLRESULT SetParamIntArray(const char *name, int size, const int* val0)
+    {
+        GLuint param = glGetUniformLocation(_program, name);
+        if (param != -1)
+        {
+            switch (stride)
+            {
+            case 1:
+                glUniform1iv(param, size, val0); break;
+            case 2:
+                glUniform2iv(param, size, val0); break;
+            case 3:
+                glUniform3iv(param, size, val0); break;
+            case 4:
+                glUniform4iv(param, size, val0); break;
+            default:
+                break;
+            }
+            
+            return GLOK;
+        }
+        return GLFAIL;
+    }
+
+    template <int stride>
+    GLRESULT SetParamFloatArray(const char *name, int size, const float* val0)
+    {
+        GLuint param = glGetUniformLocation(_program, name);
+        if (param != -1)
+        {
+            switch (stride)
+            {
+            case 1:
+                glUniform1fv(param, size, val0); break;
+            case 2:
+                glUniform2fv(param, size, val0); break;
+            case 3:
+                glUniform3fv(param, size, val0); break;
+            case 4:
+                glUniform4fv(param, size, val0); break;
+            default:
+                break;
+            }
+
+            return GLOK;
+        }
+        return GLFAIL;
+    }
+
+    template <int stride>
+    GLRESULT SetParamDoubleArray(const char *name, int size, const double* val0)
+    {
+        GLuint param = glGetUniformLocation(_program, name);
+        if (param != -1)
+        {
+            switch (stride)
+            {
+            case 1:
+                glUniform1dv(param, size, val0); break;
+            case 2:
+                glUniform2dv(param, size, val0); break;
+            case 3:
+                glUniform3dv(param, size, val0); break;
+            case 4:
+                glUniform4dv(param, size, val0); break;
+            default:
+                break;
+            }
+
+            return GLOK;
+        }
+        return GLFAIL;
+    }
+
 protected:
 
     GLRESULT LoadShader(const char *path, ShaderType type);

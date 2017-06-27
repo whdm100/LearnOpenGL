@@ -160,5 +160,11 @@
     <None Include="Shader\SimpleModelHair.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shader\InstanceShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\InstanceShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
