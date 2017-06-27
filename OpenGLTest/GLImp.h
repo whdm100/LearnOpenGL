@@ -25,7 +25,7 @@
 #ifdef _DEBUG
 #pragma comment(lib, "libSOILD.lib")
 #else
-#pragma comment(lib, "libSOILd.lib")
+#pragma comment(lib, "libSOIL.lib")
 #endif //_DEBUG
 
 // Assimp Library

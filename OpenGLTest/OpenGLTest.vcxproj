@@ -42,9 +42,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>D:\Work\Codes\library\freeglut\bin;D:\Work\Codes\library\glew-2.0.0\bin\Release\Win32;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>D:\Work\Codes\library\glfw-3.2.1\include;D:\Work\Codes\library\glew-2.0.0\include;D:\Work\Codes\library\soil\src;D:\Work\Codes\library\glm;D:\Work\Codes\library\freeglut\include;D:\Work\Codes\library\assimp-3.3.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Work\Codes\library\glfw-3.2.1\lib;D:\Work\Codes\library\glew-2.0.0\lib\Release\Win32;D:\Work\Codes\library\soil\lib;D:\Work\Codes\library\freeglut\lib;D:\Work\Codes\library\assimp-3.3.1\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)\Library\glfw-3.2.1\include;$(SolutionDir)\Library\glew-2.0.0\include;$(SolutionDir)\Library\soil\include;$(SolutionDir)\Library\glm;$(SolutionDir)\Library\assimp-3.3.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Library\glfw-3.2.1\lib;$(SolutionDir)\Library\glew-2.0.0\lib\Release\Win32;$(SolutionDir)\Library\soil\lib;$(SolutionDir)\Library\assimp-3.3.1\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
