@@ -166,5 +166,17 @@
     <None Include="Shader\InstanceShader.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shader\ShowDepth.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\ShowDepth.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\MSAAShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\MSAAShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

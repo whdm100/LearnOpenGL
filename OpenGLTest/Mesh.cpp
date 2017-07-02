@@ -5,81 +5,34 @@
 #include <sstream>
 #include <iostream>
 
-Mesh::Mesh()
-    : _hasElemArray(false)
-    , _attrIDs(AttrIDS::AttrNone)
-    , _vao(0)
-    , _vbo(0)
-    , _ebo(0)
-    , _vertices(0)
-    , _indices(0)
-{}
 
-Mesh::~Mesh()
+MeshBase::MeshBase() :
+    _hasElemArray(false),
+    _attrIndex(0),
+    _vao(0),
+    _vbo(0),
+    _ebo(0),
+    _vertices(0),
+    _indices(0)
+{
+}
+
+MeshBase::~MeshBase()
 {
     Unload();
 }
 
-void Mesh::Load(AttrIDS ids, const void *vertices, GLsizei vstride, GLuint vcount)
-{
-    if (!_vao) glGenVertexArrays(1, &_vao);
-    if (!_vbo) glGenBuffers(1, &_vbo);
-    _vertices = vcount;
-
-    GLuint index = 0;
-    GLuint offset = 0;
-    _attrIDs = ids;
-
-    glBindVertexArray(_vao);
-
-    // bind vertex data
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, vcount * vstride, vertices, GL_STATIC_DRAW);
-
-    const GLuint attrIDSize[] = { 3, 3, 3, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2 };
-
-    for (int i = 0; i != (sizeof(attrIDSize) / sizeof(GLuint)); ++i)
-    {
-        if (_attrIDs & (1 << i))
-        {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index, attrIDSize[i], GL_FLOAT, GL_FALSE, vstride, (const void*)offset);
-            ++index;
-            offset += attrIDSize[i] * sizeof(GL_FLOAT);
-        }
-    }
-
-    glBindVertexArray(0);
-}
-
-void Mesh::Load(AttrIDS ids, const GLuint *indices, GLsizei istride, GLuint icount, const void *vertices, GLsizei vstride, GLuint vcount)
-{
-    _hasElemArray = true;
-    _indices = icount;
-
-    if (!_vao) glGenVertexArrays(1, &_vao);
-    if (!_ebo) glGenBuffers(1, &_ebo);
-
-    glBindVertexArray(_vao);
-    // bind array elements
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, icount * istride, indices, GL_STATIC_DRAW);
-    glBindVertexArray(0);
-
-    Load(ids, vertices, vstride, vcount);
-}
-
-void Mesh::AddTexture(const Texture &texture)
+void MeshBase::AddTexture(const Texture &texture)
 {
     _textures.push_back(texture);
 }
 
-void Mesh::AddTexture(const vector<Texture> &textures)
+void MeshBase::AddTexture(const vector<Texture> &textures)
 {
     _textures.assign(textures.begin(), textures.end());
 }
 
-void Mesh::RemoveTextures()
+void MeshBase::RemoveTextures()
 {
     for (auto tex : _textures)
     {
@@ -88,7 +41,7 @@ void Mesh::RemoveTextures()
     _textures.clear();
 }
 
-void Mesh::Unload()
+void MeshBase::Unload()
 {
     if (_vbo) glDeleteBuffers(1, &_vbo);
     if (_ebo) glDeleteBuffers(1, &_ebo);
@@ -97,7 +50,7 @@ void Mesh::Unload()
     RemoveTextures();
 }
 
-void Mesh::Draw(Shader *shader)
+void MeshBase::Draw(Shader *shader)
 {
     // Bind appropriate textures
     for (GLuint i = 0; i < _textures.size(); i++)
@@ -123,6 +76,138 @@ void Mesh::Draw(Shader *shader)
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+}
+
+void MeshBase::DrawInstanced(Shader *shader, GLuint amout)
+{
+    // Bind appropriate textures
+    for (GLuint i = 0; i < _textures.size(); i++)
+    {
+        glActiveTexture(GL_TEXTURE0 + i); // Active proper texture unit before binding
+        // Now set the sampler to the correct texture unit
+        shader->SetParamInt(_textures[i].uname.c_str(), i);
+        // And finally bind the texture
+        glBindTexture(_textures[i].type, _textures[i].id);
+    }
+
+    // Draw mesh
+    glBindVertexArray(_vao);
+    if (_hasElemArray)
+        glDrawElementsInstanced(GL_TRIANGLES, _indices, GL_UNSIGNED_INT, 0, amout);
+    else
+        glDrawArraysInstanced(GL_TRIANGLES, 0, _vertices, amout);
+    glBindVertexArray(0);
+
+    // Restore texture to origin state
+    for (GLuint i = 0; i < _textures.size(); i++)
+    {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+}
+
+Mesh::Mesh() :
+    _attrIDs(AttrNone)
+{
+}
+
+Mesh::~Mesh()
+{
+}
+
+void Mesh::Load(AttrIDS ids, const void *vertices, GLsizei vstride, GLuint vcount)
+{
+    if (!_vao) glGenVertexArrays(1, &_vao);
+    if (!_vbo) glGenBuffers(1, &_vbo);
+    _vertices = vcount;
+
+    GLuint offset = 0;
+    _attrIDs = ids;
+
+    glBindVertexArray(_vao);
+
+    // bind vertex data
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, vcount * vstride, vertices, GL_STATIC_DRAW);
+
+    const GLuint attrIDSize[] = { 3, 3, 3, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2 };
+
+    for (int i = 0; i != (sizeof(attrIDSize) / sizeof(GLuint)); ++i)
+    {
+        if (_attrIDs & (1 << i))
+        {
+            glEnableVertexAttribArray(_attrIndex);
+            glVertexAttribPointer(_attrIndex, attrIDSize[i], GL_FLOAT, GL_FALSE, vstride, (const void*)offset);
+            ++_attrIndex;
+            offset += attrIDSize[i] * sizeof(GL_FLOAT);
+        }
+    }
+
+    glBindVertexArray(0);
+}
+
+void Mesh::Load(AttrIDS ids, const void *indices, GLsizei istride, GLuint icount, const void *vertices, GLsizei vstride, GLuint vcount)
+{
+    _hasElemArray = true;
+    _indices = icount;
+
+    if (!_vao) glGenVertexArrays(1, &_vao);
+    if (!_ebo) glGenBuffers(1, &_ebo);
+
+    glBindVertexArray(_vao);
+    // bind array elements
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, icount * istride, indices, GL_STATIC_DRAW);
+    glBindVertexArray(0);
+
+    Load(ids, vertices, vstride, vcount);
+}
+
+MeshExt::MeshExt() :
+    _vertexSize(0)
+{
+}
+
+MeshExt::~MeshExt()
+{
+}
+
+void MeshExt::LoadAttrs(const void *vertices, GLsizei stride, GLuint count)
+{
+    if (!_vao) glGenVertexArrays(1, &_vao);
+    if (!_vbo) glGenBuffers(1, &_vbo);
+
+    glBindVertexArray(_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferSubData(GL_ARRAY_BUFFER, _vertexSize, count * stride, vertices);
+    glBindVertexArray(0);
+
+    _vertexSize += count * stride;
+}
+
+void MeshExt::AddAttrs(const void *vertices, GLsizei stride, GLuint count)
+{
+    glBindVertexArray(_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferSubData(GL_ARRAY_BUFFER, _vertexSize, count * stride, vertices);
+    glBindVertexArray(0);
+
+    _vertexSize += count * stride;
+}
+
+void MeshExt::LoadIndices(const void *indices, GLsizei stride, GLuint count)
+{
+    _hasElemArray = true;
+    _indices = count;
+
+    if (!_vao) glGenVertexArrays(1, &_vao);
+    if (!_ebo) glGenBuffers(1, &_ebo);
+
+    glBindVertexArray(_vao);
+    // bind array elements
+    glBindBuffer(GL_ARRAY_BUFFER, _ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * stride, indices, GL_STATIC_DRAW);
+    glBindVertexArray(0);
 }
 
 GLuint LoadTexture(const char *path, bool alpha)
@@ -182,6 +267,14 @@ void Model::Draw(Shader *shader)
     for (auto iter = _meshes.begin(); iter != _meshes.end(); ++iter)
     {
         (*iter)->Draw(shader);
+    }
+}
+
+void Model::DrawInstanced(Shader *shader, GLuint amout)
+{
+    for (auto iter = _meshes.begin(); iter != _meshes.end(); ++iter)
+    {
+        (*iter)->DrawInstanced(shader, amout);
     }
 }
 

@@ -9,8 +9,8 @@
 
 using namespace std;
 
-Shader::Shader()
-    : _program(0)
+Shader::Shader() : 
+    _program(0)
 {
 }
 

@@ -186,4 +186,24 @@ private:
     GLuint _vbo;
 };
 
+class MSAARender : public Render
+{
+    typedef Render Base;
+public:
+    MSAARender();
+    virtual ~MSAARender();
+
+    virtual GLRESULT Load();
+    virtual void Unload();
+
+    virtual void Simulate(float delta);
+
+private:
+    std::unique_ptr<Shader> _shader;
+    Mesh _cude;
+    GLuint _fbo;
+    GLuint _rbo;
+    GLuint _tex;
+};
+
 #endif // __RENDER_H

@@ -129,9 +129,13 @@
     <None Include="Shader\InstanceShader.vert" />
     <None Include="Shader\LightFShader.frag" />
     <None Include="Shader\LightVShader.vert" />
+    <None Include="Shader\MSAAShader.frag" />
+    <None Include="Shader\MSAAShader.vert" />
     <None Include="Shader\ShapeModify.frag" />
     <None Include="Shader\ShapeModify.geom" />
     <None Include="Shader\ShapeModify.vert" />
+    <None Include="Shader\ShowDepth.frag" />
+    <None Include="Shader\ShowDepth.vert" />
     <None Include="Shader\SimpleFShader.frag" />
     <None Include="Shader\SimpleModelHair.frag" />
     <None Include="Shader\SimpleModelHair.geom" />

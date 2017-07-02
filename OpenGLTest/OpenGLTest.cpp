@@ -37,6 +37,7 @@ SimpleFrameRender *GSimpleFrameRender;
 SkyBoxRender *GSkyBoxRender;
 ModifyShapeRender *GModifyShapeRender;
 InstanceRender *GInstanceRender;
+MSAARender *GMSAARender;
 
 #ifdef _WINMAIN
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
@@ -98,6 +99,9 @@ int main(int argc, char* argv[])
     GInstanceRender = new InstanceRender();
     GInstanceRender->Load();
 
+    GMSAARender = new MSAARender();
+    GMSAARender->Load();
+
     // auto memory release
     std::unique_ptr<Camera> pCamera(GCamera);
     std::unique_ptr<SimpleRender> pSimpleRender(GSimpleRender);
@@ -108,6 +112,7 @@ int main(int argc, char* argv[])
     std::unique_ptr<SkyBoxRender> pSkyBoxRender(GSkyBoxRender);
     std::unique_ptr<ModifyShapeRender> pModifyShapeRender(GModifyShapeRender);
     std::unique_ptr<InstanceRender> pInstanceRender(GInstanceRender);
+    std::unique_ptr<MSAARender> pMSAARender(GMSAARender);
 
     // setup keyboard, mouse callback
     glfwSetKeyCallback(window, key_callback);
@@ -137,6 +142,8 @@ bool InitGlfw(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    // enable 4xMSAA
+    //glfwWindowHint(GLFW_SAMPLES, 4);
     return true;
 }
 
@@ -164,15 +171,22 @@ bool InitGlConfig(void)
     // enable depth test, default func is GL_LESS
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-
+    
+    // enable polygon offset
     //glEnable(GL_POLYGON_OFFSET_FILL);
     //glPolygonOffset(0.0, 1.0);
+
+    // enable multiSample
+    glEnable(GL_MULTISAMPLE);
 
     return true;
 }
 
 void Simulate(GLFWwindow* window)
 {
+    const float fps = 1.0f / 60.0f;
+    GLfloat startFrame = glfwGetTime();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -183,10 +197,20 @@ void Simulate(GLFWwindow* window)
     //GSimpleFrameRender->Simulate(0.0f);
     //GSkyBoxRender->Simulate(0.0f);
     //GModifyShapeRender->Simulate(0.0f);
-    GInstanceRender->Simulate(0.0f);
+    //GInstanceRender->Simulate(0.0f);
+    GMSAARender->Simulate(0.0f);
 
     glFlush();
-    Sleep(10);
+    //glfwSwapBuffers(window);
+    
+    //keep 60 fps
+    GLfloat endFrame = glfwGetTime();
+    GLfloat deltaFrame = endFrame - startFrame;
+    if (deltaFrame < fps)
+    {
+        float sleepFrame = (fps - deltaFrame) * 1000.0f;
+        Sleep(sleepFrame);
+    }        
 }
 
 void ShowGLVersion(void)

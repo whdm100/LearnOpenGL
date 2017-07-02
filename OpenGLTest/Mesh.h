@@ -20,31 +20,6 @@
 using std::vector;
 using std::string;
 
-enum AttrIDS
-{
-    AttrNone = 0x0,
-    AttrPosition = 0x1,
-    AttrNormal = 0x2,
-    AttrTangent = 0x4,
-    AttrDiffuse = 0x8,
-    AttrSpecular = 0x10,
-    AttrTex0 = 0x20,
-    AttrTex1 = 0x40,
-    AttrTex2 = 0x80,
-    AttrTex3 = 0x100,
-    AttrTex4 = 0x200,
-    AttrTex5 = 0x400,
-    AttrTex6 = 0x800,
-    AttrTex7 = 0x1000
-};
-
-struct Vertex
-{
-    Vector3 position;
-    Vector3 normal;
-    Vector2 texcoord;
-};
-
 struct Texture
 {
     GLuint id;      // texture id return from LoadTexture(...);
@@ -56,37 +31,32 @@ struct Texture
 
 class Shader;
 
-class Mesh
+class MeshBase
 {
 public:
-    Mesh();
-    ~Mesh();
+    MeshBase();
+    virtual ~MeshBase();
 
-    // Load mesh data 
-    void Load(AttrIDS ids, const void *vertices, GLsizei vstride, GLuint vcount);
-    void Load(AttrIDS ids, const GLuint *indices, GLsizei istride, GLuint icount, const void *vertices, GLsizei vstride, GLuint vcount);
-
-    // Add textures
+    // add textures
     void AddTexture(const Texture &texture);
     void AddTexture(const vector<Texture> &textures);
 
-    // Clear textures
+    // clear textures
     void RemoveTextures();
 
-    // Draw current mesh
+    // draw current mesh
     void Draw(Shader *shader);
+    void DrawInstanced(Shader *shader, GLuint amout);
 
 private:
-
-    void Load();
     void Unload();
 
-private:
+protected:
     vector<Texture> _textures;
 
     bool _hasElemArray;
 
-    AttrIDS _attrIDs;
+    GLuint _attrIndex;
 
     GLuint _vao;
     GLuint _vbo;
@@ -96,13 +66,69 @@ private:
     GLuint _indices;
 };
 
+typedef int AttrIDS;
+
+#define AttrNone      0x0
+#define AttrPosition  0x1
+#define AttrNormal    0x2
+#define AttrTangent   0x4
+#define AttrDiffuse   0x8
+#define AttrSpecular  0x10
+#define AttrTex0      0x20
+#define AttrTex1      0x40
+#define AttrTex2      0x80
+#define AttrTex3      0x100
+#define AttrTex4      0x200
+#define AttrTex5      0x400
+#define AttrTex6      0x800
+#define AttrTex7      0x1000
+
+// mesh with fixed vertex attribute
+class Mesh : public MeshBase
+{
+public:
+    Mesh();
+    virtual ~Mesh();
+
+    // load mesh data 
+    void Load(AttrIDS ids, const void *vertices, GLsizei vstride, GLuint vcount);
+    void Load(AttrIDS ids, const void *indices, GLsizei istride, GLuint icount, const void *vertices, GLsizei vstride, GLuint vcount);
+
+private:
+    AttrIDS _attrIDs;
+};
+
+// mesh extention with user-defined vertex attribute
+class MeshExt : public MeshBase
+{
+public:
+    MeshExt();
+    virtual ~MeshExt();
+
+    // load mesh data
+    void LoadAttrs(const void *vertices, GLsizei stride, GLuint count);
+    void AddAttrs(const void *vertices, GLsizei stride, GLuint count);
+    void LoadIndices(const void *indices, GLsizei stride, GLuint count);
+
+private:
+    GLuint _vertexSize;
+};
+
+// load texture from file
 GLuint LoadTexture(const char *path, bool alpha = false);
-// Load in order : right, left, top, bottom, front, back
+// faces in order : right, left, top, bottom, front, back
 GLuint LoadCubeTexture(const vector<const char*> &faces, bool alpha = false);
 
 class Model
 {
 public:
+
+    struct Vertex
+    {
+        Vector3 position;
+        Vector3 normal;
+        Vector2 texcoord;
+    };
 
     Model(GLchar* path)
     {
@@ -116,6 +142,7 @@ public:
 
     // Draw current model
     void Draw(Shader *shader);
+    void DrawInstanced(Shader *shader, GLuint amout);
 
 private:
     vector<Mesh*> _meshes;    

@@ -8,8 +8,8 @@ extern Camera *GCamera;
 extern const int GWidth = 800;
 extern const int GHeight = 600;
 
-SimpleRender::SimpleRender()
-    : _shader(new SimpleShader("Shader\\SimpleVShader.vert", "Shader\\SimpleFShader.frag"))
+SimpleRender::SimpleRender() : 
+    _shader(new SimpleShader("Shader\\SimpleVShader.vert", "Shader\\SimpleFShader.frag"))
 {
 }
 
@@ -65,8 +65,8 @@ float vertices[] = {
 
 GLRESULT SimpleRender::Load()
 {
-    int attrIds = AttrPosition | AttrTex0;
-    _mesh.Load((AttrIDS)attrIds, vertices, 5 * sizeof(GLfloat), 36);
+    AttrIDS attrIds = AttrPosition | AttrTex0;
+    _mesh.Load(attrIds, vertices, 5 * sizeof(GLfloat), 36);
 
     Texture texture;
     texture.id = LoadTexture("Resource\\box.jpg");
@@ -147,8 +147,8 @@ void SimpleRender::Simulate(float delta)
     _shader->UnBind();   
 }
 
-LightRender::LightRender()
-    : _shader(new SimpleShader("Shader\\LightVShader.vert", "Shader\\LightFShader.frag"))
+LightRender::LightRender() : 
+    _shader(new SimpleShader("Shader\\LightVShader.vert", "Shader\\LightFShader.frag"))
 {
 }
 
@@ -204,8 +204,8 @@ GLfloat verticesN[] = {
 
 GLRESULT LightRender::Load()
 {
-    int attrIds = AttrPosition | AttrNormal | AttrTex0;
-    _mesh.Load((AttrIDS)attrIds, verticesN, 8 * sizeof(GLfloat), 36);
+    AttrIDS attrIds = AttrPosition | AttrNormal | AttrTex0;
+    _mesh.Load(attrIds, verticesN, 8 * sizeof(GLfloat), 36);
 
     Texture diffuse_texture;
     Texture specular_texture;
@@ -306,10 +306,10 @@ void LightRender::Simulate(float delta)
     _shader->UnBind();
 }
 
-SimpleModelRender::SimpleModelRender()
-    : _modelShader(new SimpleShader("Shader\\SimpleModelShader.vert", "Shader\\SimpleModelShader.frag"))
-    , _hairShader(new SimpleShader("Shader\\SimpleModelHair.vert", "Shader\\SimpleModelHair.frag", "Shader\\SimpleModelHair.geom"))
-    , _model(new Model("Resource\\Model\\nanosuit\\nanosuit.obj"))
+SimpleModelRender::SimpleModelRender() : 
+    _modelShader(new SimpleShader("Shader\\SimpleModelShader.vert", "Shader\\SimpleModelShader.frag")) , 
+    _hairShader(new SimpleShader("Shader\\SimpleModelHair.vert", "Shader\\SimpleModelHair.frag", "Shader\\SimpleModelHair.geom")) , 
+    _model(new Model("Resource\\Model\\nanosuit\\nanosuit.obj"))
 {
 
 }
@@ -371,9 +371,10 @@ void SimpleModelRender::Simulate(float delta)
     _hairShader->UnBind();
 }
 
-SimpleSceneRender::SimpleSceneRender()
-    : _sceneShader(new SimpleShader("Shader\\SimpleVShader.vert", "Shader\\SimpleFShader.frag"))
-    , _alphaShader(new SimpleShader("Shader\\AlphaVShader.vert", "Shader\\AlphaFShader.frag"))
+SimpleSceneRender::SimpleSceneRender() : 
+    _sceneShader(new SimpleShader("Shader\\SimpleVShader.vert", "Shader\\SimpleFShader.frag")) ,
+    //_sceneShader(new SimpleShader("Shader\\ShowDepth.vert", "Shader\\ShowDepth.frag")),
+    _alphaShader(new SimpleShader("Shader\\AlphaVShader.vert", "Shader\\AlphaFShader.frag"))
 {
 }
 
@@ -449,10 +450,10 @@ GLfloat transparentVertices[] = {
 
 GLRESULT SimpleSceneRender::Load()
 {
-    int attrIds = AttrPosition | AttrTex0;
-    _plane.Load((AttrIDS)attrIds, planeVertices, 5 * sizeof(GLfloat), 6);
-    _cube.Load((AttrIDS)attrIds, cubeVertices, 5 * sizeof(GLfloat), 36);
-    _board.Load((AttrIDS)attrIds, transparentVertices, 5 * sizeof(GLfloat), 6);
+    AttrIDS attrIds = AttrPosition | AttrTex0;
+    _plane.Load(attrIds, planeVertices, 5 * sizeof(GLfloat), 6);
+    _cube.Load(attrIds, cubeVertices, 5 * sizeof(GLfloat), 36);
+    _board.Load(attrIds, transparentVertices, 5 * sizeof(GLfloat), 6);
 
     // load plane texture
     Texture texturePlane;
@@ -545,9 +546,9 @@ void SimpleSceneRender::Simulate(float delta)
     _alphaShader->UnBind();
 }
 
-SimpleFrameRender::SimpleFrameRender()
-    : _sceneShader(new SimpleShader("Shader\\SimpleVShader.vert", "Shader\\SimpleFShader.frag"))
-    , _frameShader(new SimpleShader("Shader\\FrameVShader.vert", "Shader\\FrameFShader.frag"))
+SimpleFrameRender::SimpleFrameRender() : 
+    _sceneShader(new SimpleShader("Shader\\SimpleVShader.vert", "Shader\\SimpleFShader.frag")) ,
+    _frameShader(new SimpleShader("Shader\\FrameVShader.vert", "Shader\\FrameFShader.frag"))
 {
 
 }
@@ -570,10 +571,10 @@ GLfloat quadVertices[] = {   // Vertex attributes for a quad that fills the enti
 
 GLRESULT SimpleFrameRender::Load()
 {
-    int attrIds = AttrPosition | AttrTex0;
-    _plane.Load((AttrIDS)attrIds, planeVertices, 5 * sizeof(GLfloat), 6);
-    _cube.Load((AttrIDS)attrIds, cubeVertices, 5 * sizeof(GLfloat), 36);
-    _quad.Load((AttrIDS)attrIds, quadVertices, 5 * sizeof(GLfloat), 6);
+    AttrIDS attrIds = AttrPosition | AttrTex0;
+    _plane.Load(attrIds, planeVertices, 5 * sizeof(GLfloat), 6);
+    _cube.Load(attrIds, cubeVertices, 5 * sizeof(GLfloat), 36);
+    _quad.Load(attrIds, quadVertices, 5 * sizeof(GLfloat), 6);
 
     // Load plane texture
     Texture texturePlane;
@@ -691,8 +692,8 @@ void SimpleFrameRender::Simulate(float delta)
     _frameShader->UnBind();
 }
 
-SkyBoxRender::SkyBoxRender()
-    : _sceneShader(new SimpleShader("Shader\\SkyBoxVShader.vert", "Shader\\SkyBoxFShader.frag"))
+SkyBoxRender::SkyBoxRender() : 
+    _sceneShader(new SimpleShader("Shader\\SkyBoxVShader.vert", "Shader\\SkyBoxFShader.frag"))
 {
 }
 
@@ -832,8 +833,8 @@ void SkyBoxRender::Simulate(float delta)
     _sceneShader->UnBind();
 }
 
-ModifyShapeRender::ModifyShapeRender()
-    : _shapeShader(new SimpleShader(
+ModifyShapeRender::ModifyShapeRender() : 
+    _shapeShader(new SimpleShader(
         "Shader\\ShapeModify.vert", 
         "Shader\\ShapeModify.frag",
         "Shader\\ShapeModify.geom"))
@@ -888,8 +889,8 @@ void ModifyShapeRender::Simulate(float delta)
     _shapeShader->UnBind();
 }
 
-InstanceRender::InstanceRender()
-    : _shader(new SimpleShader("Shader\\InstanceShader.vert", "Shader\\InstanceShader.frag"))
+InstanceRender::InstanceRender() : 
+    _shader(new SimpleShader("Shader\\InstanceShader.vert", "Shader\\InstanceShader.frag"))
 {
 }
 
@@ -958,4 +959,73 @@ void InstanceRender::Simulate(float delta)
     glBindVertexArray(0);
 
     _shader->UnBind();
+}
+
+MSAARender::MSAARender() :
+    _shader(new SimpleShader("Shader\\MSAAShader.vert", "Shader\\MSAAShader.frag")),
+    _fbo(0),
+    _rbo(0)
+{
+}
+
+MSAARender::~MSAARender()
+{
+    Unload();
+}
+
+GLRESULT MSAARender::Load()
+{
+    _cude.Load(AttrPosition, skyboxVertices, sizeof(GLfloat)* 3, 36);
+
+    glGenFramebuffers(1, &_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+
+    glGenTextures(1, &_tex);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _tex);
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, GWidth, GHeight, GL_TRUE);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, _tex, 0);
+
+    glGenRenderbuffers(1, &_rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, _rbo);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, GWidth, GHeight);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _rbo);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    return GLOK;
+}
+
+void MSAARender::Unload()
+{
+    glDeleteFramebuffers(1, &_fbo);
+    glDeleteRenderbuffers(1, &_rbo);
+    glDeleteTextures(1, &_tex);
+}
+
+void MSAARender::Simulate(float delta)
+{
+    // draw cube
+    glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    _shader->Bind();
+
+    Matrix4 model;
+    Matrix4 view = GCamera->View();
+    Matrix4 proj = GCamera->Perspective();
+
+    Matrix4 trans = proj * view * model;
+    _shader->SetParamMat4f("trans", value_ptr(trans));
+
+    _cude.Draw(_shader.get());
+
+    _shader->UnBind();
+
+    // blit framebuffer to screen
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, _fbo);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glBlitFramebuffer(0, 0, GWidth, GHeight, 0, 0, GWidth, GHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);    
 }

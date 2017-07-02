@@ -244,6 +244,7 @@ public:
         return GLFAIL;
     }
 
+    // set Vector1/Vector2/Vector3/Vector3 array
     template <int stride>
     GLRESULT SetParamIntArray(const char *name, int size, const int* val0)
     {
@@ -269,6 +270,7 @@ public:
         return GLFAIL;
     }
 
+    // set Vector1/Vector2/Vector3/Vector3 array
     template <int stride>
     GLRESULT SetParamFloatArray(const char *name, int size, const float* val0)
     {
@@ -294,6 +296,7 @@ public:
         return GLFAIL;
     }
 
+    // set Vector1/Vector2/Vector3/Vector3 array
     template <int stride>
     GLRESULT SetParamDoubleArray(const char *name, int size, const double* val0)
     {
