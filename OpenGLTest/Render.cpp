@@ -9,7 +9,7 @@ extern const int GWidth = 800;
 extern const int GHeight = 600;
 
 SimpleRender::SimpleRender() : 
-    _shader(new SimpleShader("Shader\\SimpleVShader.vert", "Shader\\SimpleFShader.frag"))
+    _shader(new SimpleShader("Shader\\SimpleShader.vert", "Shader\\SimpleShader.frag"))
 {
 }
 
@@ -372,7 +372,7 @@ void SimpleModelRender::Simulate(float delta)
 }
 
 SimpleSceneRender::SimpleSceneRender() : 
-    _sceneShader(new SimpleShader("Shader\\SimpleVShader.vert", "Shader\\SimpleFShader.frag")) ,
+    _sceneShader(new SimpleShader("Shader\\SimpleShader.vert", "Shader\\SimpleShader.frag")) ,
     //_sceneShader(new SimpleShader("Shader\\ShowDepth.vert", "Shader\\ShowDepth.frag")),
     _alphaShader(new SimpleShader("Shader\\AlphaVShader.vert", "Shader\\AlphaFShader.frag"))
 {
@@ -547,7 +547,7 @@ void SimpleSceneRender::Simulate(float delta)
 }
 
 SimpleFrameRender::SimpleFrameRender() : 
-    _sceneShader(new SimpleShader("Shader\\SimpleVShader.vert", "Shader\\SimpleFShader.frag")) ,
+    _sceneShader(new SimpleShader("Shader\\SimpleShader.vert", "Shader\\SimpleShader.frag")) ,
     _frameShader(new SimpleShader("Shader\\FrameVShader.vert", "Shader\\FrameFShader.frag"))
 {
 
@@ -1028,4 +1028,121 @@ void MSAARender::Simulate(float delta)
     glBindFramebuffer(GL_READ_FRAMEBUFFER, _fbo);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glBlitFramebuffer(0, 0, GWidth, GHeight, 0, 0, GWidth, GHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);    
+}
+
+ShadowRender::ShadowRender() :
+    _sceneShader(new SimpleShader("Shader\\shadowScene.vert", "Shader\\shadowScene.frag")),
+    _depthShader(new SimpleShader("Shader\\ShowDepth.vert", "Shader\\ShowDepth.frag")),
+    _shadowMapShader(new SimpleShader("", ""))
+{}
+
+ShadowRender::~ShadowRender()
+{
+    Unload();
+}
+
+GLfloat floorVertices[] = {
+    // Positions   // TexCoords
+    -10.0f, 0.0f, -10.0f, 0.0f, 1.0f,
+    -10.0f, 0.0f, 10.0f, 0.0f, 0.0f,
+    10.0f, 0.0f, 10.0f, 1.0f, 0.0f,
+
+    -10.0f, 0.0f, -10.0f, 0.0f, 1.0f,
+    10.0f, 0.0f, 10.0f, 1.0f, 0.0f,
+    10.0f, 0.0f, -10.0f, 1.0f, 1.0f
+};
+
+const int depthMapWidth = 1024;
+const int depthMapHeight = 1024;
+
+GLRESULT ShadowRender::Load()
+{
+    // Load box and floor mesh.
+    AttrIDS attrIds = AttrPosition | AttrTex0;
+    _spot.Load(attrIds, cubeVertices, 5 * sizeof(GLfloat), 36);
+    _box.Load(attrIds, cubeVertices, 5 * sizeof(GLfloat), 36);
+    _floor.Load(attrIds, floorVertices, 5 * sizeof(GLfloat), 6);
+
+    // Load mesh texture
+    Texture texBox;
+    texBox.id = LoadTexture("Resource\\box.jpg", false);
+    texBox.type = GL_TEXTURE_2D;
+    texBox.map = "texture_diffuse";
+    texBox.uname = "texSampler";
+
+    _box.AddTexture(texBox);
+
+    Texture texFloor;
+    texFloor.id = LoadTexture("Resource\\floor.jpg", false);
+    texFloor.type = GL_TEXTURE_2D;
+    texFloor.map = "texture_diffuse";
+    texFloor.uname = "texSampler";
+
+    _floor.AddTexture(texFloor);
+
+    // Load frameBuffer, bind frameBuffer with texture
+    // Output texture as a depth map
+    // Must call glViewPort set screen width/height same as depth texture width/height.
+    glGenFramebuffers(1, &_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+
+    glGenTextures(1, &_depthMap);
+    glBindTexture(GL_TEXTURE_2D, _depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, depthMapWidth, depthMapHeight,
+        0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    return GLOK;
+}
+
+void ShadowRender::Unload()
+{
+    glDeleteTextures(1, &_depthMap);
+    glDeleteFramebuffers(1, &_fbo);
+}
+
+void ShadowRender::Simulate(float delta)
+{
+    glViewport(0, 0, depthMapWidth, depthMapHeight);
+    glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    _depthShader->Bind();
+
+    // Draw floor
+    Matrix4 model = translate(Matrix4(), Vector3(0.0f, -1.0f, 0.0f));
+    Matrix4 view = GCamera->View();
+    Matrix4 proj = GCamera->Perspective();
+    Matrix4 trans = proj * view * model;
+    _depthShader->SetParamMat4f("transform", value_ptr(trans));
+    _floor.Draw(_depthShader.get());
+
+    // Draw left box
+    model = translate(Matrix4(), Vector3(-2.0f, 1.0f, 0.0f));
+    trans = proj * view * model;
+    _depthShader->SetParamMat4f("transform", value_ptr(trans));
+    _box.Draw(_depthShader.get());
+
+    // Draw right box
+    model = translate(Matrix4(), Vector3(2.0f, 1.0f, 0.0f));
+    model = rotate(model, TO_RADIAN(30.0f), Vector3(1.0f, 1.0f, 1.0f));
+    trans = proj * view * model;
+    _depthShader->SetParamMat4f("transform", value_ptr(trans));
+    _box.Draw(_depthShader.get());
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glViewport(0, 0, GWidth, GHeight);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    _shadowMapShader->Bind();
+    _shadowMapShader->UnBind();
+
 }

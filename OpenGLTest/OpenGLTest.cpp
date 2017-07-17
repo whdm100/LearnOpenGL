@@ -38,6 +38,7 @@ SkyBoxRender *GSkyBoxRender;
 ModifyShapeRender *GModifyShapeRender;
 InstanceRender *GInstanceRender;
 MSAARender *GMSAARender;
+ShadowRender *GShadowRender;
 
 #ifdef _WINMAIN
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
@@ -102,6 +103,9 @@ int main(int argc, char* argv[])
     GMSAARender = new MSAARender();
     GMSAARender->Load();
 
+    GShadowRender = new ShadowRender();
+    GShadowRender->Load();
+
     // auto memory release
     std::unique_ptr<Camera> pCamera(GCamera);
     std::unique_ptr<SimpleRender> pSimpleRender(GSimpleRender);
@@ -113,6 +117,7 @@ int main(int argc, char* argv[])
     std::unique_ptr<ModifyShapeRender> pModifyShapeRender(GModifyShapeRender);
     std::unique_ptr<InstanceRender> pInstanceRender(GInstanceRender);
     std::unique_ptr<MSAARender> pMSAARender(GMSAARender);
+    std::unique_ptr<ShadowRender> pShadowRender(GShadowRender);
 
     // setup keyboard, mouse callback
     glfwSetKeyCallback(window, key_callback);
@@ -198,7 +203,8 @@ void Simulate(GLFWwindow* window)
     //GSkyBoxRender->Simulate(0.0f);
     //GModifyShapeRender->Simulate(0.0f);
     //GInstanceRender->Simulate(0.0f);
-    GMSAARender->Simulate(0.0f);
+    //GMSAARender->Simulate(0.0f);
+    GShadowRender->Simulate(0.0f);
 
     glFlush();
     //glfwSwapBuffers(window);

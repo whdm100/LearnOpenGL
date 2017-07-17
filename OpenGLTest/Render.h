@@ -206,4 +206,30 @@ private:
     GLuint _tex;
 };
 
+class ShadowRender : public Render
+{
+    typedef Render Base;
+public:
+    ShadowRender();
+    virtual ~ShadowRender();
+
+    virtual GLRESULT Load();
+    virtual void Unload();
+
+    virtual void Simulate(float delta);
+
+private:
+    std::unique_ptr<Shader> _sceneShader;
+    std::unique_ptr<Shader> _depthShader;
+    std::unique_ptr<Shader> _shadowMapShader;
+    std::unique_ptr<Shader> _shadowVolumeShader;
+
+    Mesh _spot;
+    Mesh _box;
+    Mesh _floor;
+
+    GLuint _fbo;
+    GLuint _depthMap;
+};
+
 #endif // __RENDER_H

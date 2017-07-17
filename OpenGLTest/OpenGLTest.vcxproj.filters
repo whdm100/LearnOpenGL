@@ -118,12 +118,6 @@
     <None Include="Shader\LightVShader.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shader\SimpleFShader.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shader\SimpleVShader.vert">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shader\FrameFShader.frag">
       <Filter>Shaders</Filter>
     </None>
@@ -176,6 +170,18 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\MSAAShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\ShadowScene.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\ShadowScene.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SimpleShader.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
